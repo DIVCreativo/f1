@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 2026 Hub - Calendario Oficial</title>
+    <title>Racing Hub 2026 - F1 & MotoGP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -54,6 +54,29 @@
             letter-spacing: 1px;
         }
 
+        .category-tab {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .category-tab.active {
+            color: white;
+        }
+
+        .category-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--f1-red);
+            border-radius: 10px;
+        }
+
         .race-card {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -92,12 +115,18 @@
 </head>
 <body class="min-h-screen pb-12 overflow-x-hidden">
 
-    <header class="p-6 flex justify-between items-center max-w-7xl mx-auto sticky top-0 z-50 bg-black/50 backdrop-blur-md mb-4">
+    <header class="p-6 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto sticky top-0 z-50 bg-black/50 backdrop-blur-md mb-4 gap-4">
         <div class="flex items-center gap-3">
             <div class="w-12 h-1.5 bg-red-600 rounded-full"></div>
-            <h1 class="text-2xl font-black tracking-tighter uppercase italic">F1 <span class="text-red-600">2026</span></h1>
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic">RACING <span class="text-red-600">2026</span></h1>
         </div>
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest hidden sm:block">
+        
+        <div class="flex gap-8">
+            <div onclick="switchCategory('f1')" id="tab-f1" class="category-tab active font-black text-sm uppercase tracking-tighter">Formula 1</div>
+            <div onclick="switchCategory('motogp')" id="tab-motogp" class="category-tab font-black text-sm uppercase tracking-tighter">MotoGP</div>
+        </div>
+
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest hidden lg:block">
             Calendario Oficial 2026
         </div>
     </header>
@@ -110,49 +139,51 @@
                 <div class="relative z-10 flex flex-col lg:flex-row gap-10">
                     <div class="flex-1">
                         <span id="hero-badge" class="status-badge mb-4 inline-block">Siguiente Carrera</span>
-                        <h2 id="hero-name" class="text-5xl md:text-7xl font-black mb-2 uppercase italic leading-none tracking-tighter">Cargando...</h2>
+                        <h2 id="hero-name" class="text-5xl md:text-7xl font-black mb-2 uppercase italic leading-none tracking-tighter tracking-tight text-white">Cargando...</h2>
                         <p id="hero-subtitle" class="text-xl text-red-500/80 mb-6 font-semibold italic">Localidad</p>
                         
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
                             <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
                                 <p class="text-[10px] text-gray-500 uppercase font-extrabold mb-1">Fecha Evento</p>
-                                <p id="hero-range" class="text-lg font-bold italic">--</p>
+                                <p id="hero-range" class="text-lg font-bold italic text-white">--</p>
                             </div>
                             <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
                                 <p class="text-[10px] text-gray-500 uppercase font-extrabold mb-1">Circuito</p>
-                                <p id="hero-circuit-box" class="text-lg font-bold italic truncate">--</p>
+                                <p id="hero-circuit-box" class="text-lg font-bold italic truncate text-white">--</p>
                             </div>
-                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5" id="laps-container">
                                 <p class="text-[10px] text-gray-500 uppercase font-extrabold mb-1">Vueltas</p>
                                 <p id="hero-laps" class="text-lg font-bold italic text-red-600">--</p>
                             </div>
                         </div>
 
                         <div id="countdown-container">
-                            <p class="text-[10px] text-gray-500 uppercase font-black mb-2 tracking-widest" id="countdown-label">Tiempo para la carrera</p>
+                            <p class="text-[10px] text-gray-500 uppercase font-black mb-2 tracking-widest text-zinc-400" id="countdown-label">Tiempo para la carrera</p>
                             <div id="countdown" class="flex gap-6 mb-4">
-                                <div><p id="days" class="text-4xl font-black">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">Días</p></div>
-                                <div><p id="hours" class="text-4xl font-black">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">Horas</p></div>
-                                <div><p id="minutes" class="text-4xl font-black">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">Mins</p></div>
-                                <div><p id="seconds" class="text-4xl font-black text-red-600">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">Segs</p></div>
+                                <div><p id="days" class="text-4xl font-black text-white">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest text-zinc-500">Días</p></div>
+                                <div><p id="hours" class="text-4xl font-black text-white">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest text-zinc-500">Horas</p></div>
+                                <div><p id="minutes" class="text-4xl font-black text-white">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest text-zinc-500">Mins</p></div>
+                                <div><p id="seconds" class="text-4xl font-black text-red-600">00</p><p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest text-zinc-500">Segs</p></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="lg:w-96 bg-black/30 rounded-3xl p-6 border border-white/10 flex flex-col">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-black uppercase flex items-center gap-2">
-                                <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse" id="status-dot"></span>
-                                Sesiones Restantes
-                            </h3>
+                    <div class="lg:w-96 flex flex-col gap-6">
+                        <div class="bg-black/30 rounded-3xl p-6 border border-white/10 flex flex-col h-full min-h-[300px]">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-sm font-black uppercase flex items-center gap-2 text-zinc-300">
+                                    <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse" id="status-dot"></span>
+                                    Sesiones Restantes
+                                </h3>
+                            </div>
+                            <div id="hero-sessions" class="space-y-5"></div>
                         </div>
-                        <div id="hero-sessions" class="space-y-5"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-8 text-gray-200">Temporada <span class="text-red-600">2026</span></h3>
+        <h3 id="category-title" class="text-3xl font-black uppercase italic tracking-tighter mb-8 text-gray-200">Temporada <span class="text-red-600">2026</span></h3>
         <div id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20"></div>
     </main>
 
@@ -160,57 +191,60 @@
     <div id="modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm hidden-modal">
         <div class="glass max-w-lg w-full p-8 relative border-red-600/30 overflow-y-auto max-h-[90vh]">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-3xl font-black p-2 leading-none">&times;</button>
-            <div id="modal-content"></div>
+            <div id="modal-content">
+                <!-- Contenido dinámico -->
+            </div>
         </div>
     </div>
 
     <footer class="mt-20 border-t border-white/10 p-10 text-center text-gray-600 text-xs uppercase tracking-[0.3em] font-black italic">
-        F1 Hub 2026 - Racing Data Interface
+        F1 & MotoGP Hub 2026 - Racing Data Interface
     </footer>
 
     <script>
-        const raceData = [
-            { id: "01", flag: "🇦🇺", name: "Australia GP", circuit: "Albert Park Circuit", location: "Melbourne", dateRange: "6 - 8 de Marzo", laps: 58, sessions: [
+        // --- BASE DE DATOS F1 2026 (24 Carreras Actualizadas) ---
+        const f1Data = [
+            { id: "01", flag: "🇦🇺", name: "Australia GP", circuit: "Melbourne", location: "Melbourne", dateRange: "6 - 8 de Marzo", laps: 58, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-03-06T02:30:00", time: "02:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-03-06T06:00:00", time: "06:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-03-07T02:30:00", time: "02:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-03-07T06:00:00", time: "06:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-03-08T05:00:00", time: "05:00" }
             ]},
-            { id: "02", flag: "🇨🇳", name: "China GP", circuit: "Shanghai International Circuit", location: "Shanghái", dateRange: "13 - 15 de Marzo", laps: 56, type: "Sprint", sessions: [
+            { id: "02", flag: "🇨🇳", name: "China GP", circuit: "Shanghái", location: "Shanghái", dateRange: "13 - 15 de Marzo", laps: 56, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-03-13T04:30:00", time: "04:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-03-13T08:30:00", time: "08:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-03-14T04:00:00", time: "04:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-03-14T08:00:00", time: "08:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-03-14T04:00:00", time: "04:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-03-14T08:00:00", time: "08:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-03-15T08:00:00", time: "08:00" }
             ]},
-            { id: "03", flag: "🇯🇵", name: "Japón GP", circuit: "Suzuka Circuit", location: "Suzuka", dateRange: "27 - 29 de Marzo", laps: 53, sessions: [
+            { id: "03", flag: "🇯🇵", name: "Japón GP", circuit: "Suzuka", location: "Suzuka", dateRange: "27 - 29 de Marzo", laps: 53, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-03-27T03:30:00", time: "03:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-03-27T07:00:00", time: "07:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-03-28T03:30:00", time: "03:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-03-28T07:00:00", time: "07:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-03-29T07:00:00", time: "07:00" }
             ]},
-            { id: "04", flag: "🇧🇭", name: "Baréin GP", circuit: "Bahrain International Circuit", location: "Sakhir", dateRange: "10 - 12 de Abril", laps: 57, type: "Nocturno", sessions: [
+            { id: "04", flag: "🇧🇭", name: "Baréin GP", circuit: "Sakhir", location: "Sakhir", dateRange: "10 - 12 de Abril", laps: 57, type: "Nocturno", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-04-10T13:30:00", time: "13:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-04-10T17:00:00", time: "17:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-04-11T14:30:00", time: "14:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-04-11T18:00:00", time: "18:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-04-12T17:00:00", time: "17:00" }
             ]},
-            { id: "05", flag: "🇸🇦", name: "Arabia Saudí GP", circuit: "Jeddah Corniche Circuit", location: "Yeda", dateRange: "17 - 19 de Abril", laps: 50, type: "Nocturno", sessions: [
+            { id: "05", flag: "🇸🇦", name: "Arabia Saudí GP", circuit: "Yeda", location: "Yeda", dateRange: "17 - 19 de Abril", laps: 50, type: "Nocturno", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-04-17T15:30:00", time: "15:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-04-17T19:00:00", time: "19:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-04-18T15:30:00", time: "15:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-04-18T19:00:00", time: "19:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-04-19T19:00:00", time: "19:00" }
             ]},
-            { id: "06", flag: "🇺🇸", name: "Miami GP", circuit: "Miami International Autodrome", location: "Miami", dateRange: "1 - 3 de Mayo", laps: 57, type: "Sprint", sessions: [
+            { id: "06", flag: "🇺🇸", name: "EE. UU. GP", circuit: "Miami", location: "Miami", dateRange: "1 - 3 de Mayo", laps: 57, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-05-01T18:30:00", time: "18:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-05-01T22:30:00", time: "22:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-05-02T18:00:00", time: "18:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-05-02T22:00:00", time: "22:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-05-02T18:00:00", time: "18:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-05-02T22:00:00", time: "22:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-05-03T22:00:00", time: "22:00" }
             ]},
-            { id: "07", flag: "🇨🇦", name: "Canadá GP", circuit: "Circuit Gilles Villeneuve", location: "Montreal", dateRange: "22 - 24 de Mayo", laps: 70, type: "Sprint", sessions: [
+            { id: "07", flag: "🇨🇦", name: "Canadá GP", circuit: "Montreal", location: "Montreal", dateRange: "22 - 24 de Mayo", laps: 70, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-05-22T18:30:00", time: "18:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-05-22T22:30:00", time: "22:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-05-23T18:00:00", time: "18:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-05-23T22:00:00", time: "22:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-05-23T18:00:00", time: "18:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-05-23T22:00:00", time: "22:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-05-24T22:00:00", time: "22:00" }
             ]},
-            { id: "08", flag: "🇲🇨", name: "Mónaco GP", circuit: "Circuit de Monaco", location: "Monaco", dateRange: "5 - 7 de Junio", laps: 78, sessions: [
+            { id: "08", flag: "🇲🇨", name: "Mónaco GP", circuit: "Mónaco", location: "Mónaco", dateRange: "5 - 7 de Junio", laps: 78, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-06-05T13:30:00", time: "13:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-06-05T17:00:00", time: "17:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-06-06T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-06-06T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-06-07T15:00:00", time: "15:00" }
             ]},
-            { id: "09", flag: "🇪🇸", name: "España GP", circuit: "Circuit de Barcelona-Catalunya", location: "Barcelona", dateRange: "12 - 14 de Junio", laps: 66, sessions: [
+            { id: "09", flag: "🇪🇸", name: "España GP", circuit: "Barcelona-Cat.", location: "Barcelona", dateRange: "12 - 14 de Junio", laps: 66, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-06-12T13:30:00", time: "13:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-06-12T17:00:00", time: "17:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-06-13T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-06-13T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-06-14T15:00:00", time: "15:00" }
@@ -220,12 +254,12 @@
                 { name: "Libres 3", day: "Sábado", iso: "2026-06-27T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-06-27T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-06-28T15:00:00", time: "15:00" }
             ]},
-            { id: "11", flag: "🇬🇧", name: "Gran Bretaña GP", circuit: "Silverstone Circuit", location: "Silverstone", dateRange: "3 - 5 de Julio", laps: 52, type: "Sprint", sessions: [
+            { id: "11", flag: "🇬🇧", name: "G. Bretaña GP", circuit: "Silverstone", location: "Silverstone", dateRange: "3 - 5 de Julio", laps: 52, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-07-03T13:30:00", time: "13:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-07-03T17:30:00", time: "17:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-07-04T13:00:00", time: "13:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-07-04T17:00:00", time: "17:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-07-04T13:00:00", time: "13:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-07-04T17:00:00", time: "17:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-07-05T16:00:00", time: "16:00" }
             ]},
-            { id: "12", flag: "🇧🇪", name: "Bélgica GP", circuit: "Circuit de Spa-Francorchamps", location: "Spa", dateRange: "17 - 19 de Julio", laps: 44, sessions: [
+            { id: "12", flag: "🇧🇪", name: "Bélgica GP", circuit: "Spa-Francor.", location: "Spa", dateRange: "17 - 19 de Julio", laps: 44, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-07-17T13:30:00", time: "13:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-07-17T17:00:00", time: "17:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-07-18T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-07-18T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-07-19T15:00:00", time: "15:00" }
@@ -235,118 +269,157 @@
                 { name: "Libres 3", day: "Sábado", iso: "2026-07-25T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-07-25T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-07-26T15:00:00", time: "15:00" }
             ]},
-            { id: "14", flag: "🇳🇱", name: "Países Bajos GP", circuit: "Circuit Zandvoort", location: "Zandvoort", dateRange: "21 - 23 de Agosto", laps: 72, type: "Sprint", sessions: [
+            { id: "14", flag: "🇳🇱", name: "Países Bajos GP", circuit: "Zandvoort", location: "Zandvoort", dateRange: "21 - 23 de Agosto", laps: 72, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-08-21T12:30:00", time: "12:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-08-21T16:30:00", time: "16:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-08-22T12:00:00", time: "12:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-08-22T16:00:00", time: "16:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-08-22T12:00:00", time: "12:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-08-22T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-08-23T15:00:00", time: "15:00" }
             ]},
-            { id: "15", flag: "🇮🇹", name: "Italia GP", circuit: "Autodromo Nazionale Monza", location: "Monza", dateRange: "4 - 6 de Septiembre", laps: 53, sessions: [
+            { id: "15", flag: "🇮🇹", name: "Italia GP", circuit: "Monza", location: "Monza", dateRange: "4 - 6 de Septiembre", laps: 53, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-09-04T12:30:00", time: "12:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-09-04T16:00:00", time: "16:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-09-05T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-09-05T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-09-06T15:00:00", time: "15:00" }
             ]},
-            { id: "16", flag: "🇪🇸", name: "España GP (Madrid)", circuit: "IFEMA Madrid Circuit", location: "Madrid", dateRange: "11 - 13 de Septiembre", laps: 57, sessions: [
+            { id: "16", flag: "🇪🇸", name: "España GP", circuit: "Madrid", location: "Madrid", dateRange: "11 - 13 de Septiembre", laps: 57, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-09-11T13:30:00", time: "13:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-09-11T17:00:00", time: "17:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-09-12T12:30:00", time: "12:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-09-12T16:00:00", time: "16:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-09-13T15:00:00", time: "15:00" }
             ]},
-            { id: "17", flag: "🇦🇿", name: "Azerbaiyán GP", circuit: "Baku City Circuit", location: "Bakú", dateRange: "24 - 26 de Septiembre", laps: 51, sessions: [
+            { id: "17", flag: "🇦🇿", name: "Azerbaiyán GP", circuit: "Bakú", location: "Bakú", dateRange: "24 - 26 de Septiembre", laps: 51, sessions: [
                 { name: "Libres 1", day: "Jueves", iso: "2026-09-24T10:30:00", time: "10:30" }, { name: "Libres 2", day: "Jueves", iso: "2026-09-24T14:00:00", time: "14:00" },
                 { name: "Libres 3", day: "Viernes", iso: "2026-09-25T10:30:00", time: "10:30" }, { name: "Clasificación", day: "Viernes", iso: "2026-09-25T14:00:00", time: "14:00" },
                 { name: "Carrera", day: "Sábado", iso: "2026-09-26T13:00:00", time: "13:00" }
             ]},
-            { id: "18", flag: "🇸🇬", name: "Singapur GP", circuit: "Marina Bay Street Circuit", location: "Singapur", dateRange: "9 - 11 de Octubre", laps: 62, type: "Sprint/Nocturno", sessions: [
+            { id: "18", flag: "🇸🇬", name: "Singapur GP", circuit: "Marina Bay-N", location: "Singapur", dateRange: "9 - 11 de Octubre", laps: 62, type: "Sprint", sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-10-09T11:30:00", time: "11:30" }, { name: "Clasif. Sprint", day: "Viernes", iso: "2026-10-09T14:30:00", time: "14:30" },
-                { name: "Carrera Sprint", day: "Sábado", iso: "2026-10-10T11:00:00", time: "11:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-10-10T15:00:00", time: "15:00" },
+                { name: "Sprint", day: "Sábado", iso: "2026-10-10T11:00:00", time: "11:00" }, { name: "Clasificación", day: "Sábado", iso: "2026-10-10T15:00:00", time: "15:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-10-11T14:00:00", time: "14:00" }
             ]},
-            { id: "19", flag: "🇺🇸", name: "EE. UU. GP", circuit: "Circuit of the Americas", location: "Austin", dateRange: "23 - 25 de Octubre", laps: 56, sessions: [
+            { id: "19", flag: "🇺🇸", name: "EE. UU. GP", circuit: "CoTA Austin", location: "Austin", dateRange: "23 - 25 de Octubre", laps: 56, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-10-23T19:30:00", time: "19:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-10-23T23:00:00", time: "23:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-10-24T19:30:00", time: "19:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-10-24T23:00:00", time: "23:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-10-25T21:00:00", time: "21:00" }
             ]},
-            { id: "20", flag: "🇲🇽", name: "México GP", circuit: "Autódromo Hermanos Rodríguez", location: "Ciudad de México", dateRange: "30 Oct - 1 de Nov", laps: 71, sessions: [
+            { id: "20", flag: "🇲🇽", name: "México GP", circuit: "Hnos.Rguez.", location: "CDMX", dateRange: "30 Oct - 1 de Noviembre", laps: 71, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-10-30T19:30:00", time: "19:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-10-30T23:00:00", time: "23:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-10-31T18:30:00", time: "18:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-10-31T22:00:00", time: "22:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-11-01T21:00:00", time: "21:00" }
             ]},
-            { id: "21", flag: "🇧🇷", name: "Brasil GP", circuit: "Autódromo José Carlos Pace", location: "São Paulo", dateRange: "6 - 8 de Noviembre", laps: 71, sessions: [
+            { id: "21", flag: "🇧🇷", name: "Brasil GP", circuit: "José.C.Pace", location: "São Paulo", dateRange: "6 - 8 de Noviembre", laps: 71, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-11-06T16:30:00", time: "16:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-11-06T20:00:00", time: "20:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-11-07T15:30:00", time: "15:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-11-07T19:00:00", time: "19:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-11-08T18:00:00", time: "18:00" }
             ]},
-            { id: "22", flag: "🇺🇸", name: "EE. UU. GP (Las Vegas)", circuit: "Las Vegas Strip Circuit", location: "Las Vegas", dateRange: "20 - 22 de Noviembre", laps: 50, type: "Nocturno", sessions: [
+            { id: "22", flag: "🇺🇸", name: "EE. UU. GP", circuit: "Las.Vegas-N", location: "Las Vegas", dateRange: "20 - 22 de Noviembre", laps: 50, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-11-20T01:30:00", time: "01:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-11-20T05:00:00", time: "05:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-11-21T01:30:00", time: "01:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-11-21T05:00:00", time: "05:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-11-22T05:00:00", time: "05:00" }
             ]},
-            { id: "23", flag: "🇶🇦", name: "Catar GP", circuit: "Lusail International Circuit", location: "Lusail", dateRange: "27 - 29 de Noviembre", laps: 57, type: "Nocturno", sessions: [
+            { id: "23", flag: "🇶🇦", name: "Catar GP", circuit: "Lusail-N", location: "Lusail", dateRange: "27 - 29 de Noviembre", laps: 57, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-11-27T14:30:00", time: "14:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-11-27T18:00:00", time: "18:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-11-28T15:30:00", time: "15:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-11-28T19:00:00", time: "19:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-11-29T17:00:00", time: "17:00" }
             ]},
-            { id: "24", flag: "🇦🇪", name: "Abu Dabi GP", circuit: "Yas Marina Circuit", location: "Abu Dabi", dateRange: "4 - 6 de Diciembre", laps: 58, type: "Nocturno", sessions: [
+            { id: "24", flag: "🇦🇪", name: "Abu Dabi GP", circuit: "Yas Marina-N", location: "Abu Dabi", dateRange: "4 - 6 de Diciembre", laps: 58, sessions: [
                 { name: "Libres 1", day: "Viernes", iso: "2026-12-04T10:30:00", time: "10:30" }, { name: "Libres 2", day: "Viernes", iso: "2026-12-04T14:00:00", time: "14:00" },
                 { name: "Libres 3", day: "Sábado", iso: "2026-12-05T11:30:00", time: "11:30" }, { name: "Clasificación", day: "Sábado", iso: "2026-12-05T15:00:00", time: "15:00" },
                 { name: "Carrera", day: "Domingo", iso: "2026-12-06T14:00:00", time: "14:00" }
             ]}
         ];
 
-        let currentActiveRace = null;
+        // --- BASE DE DATOS MOTOGP 2026 (22 Carreras) ---
+        const motogpData = [
+            { id: "01", flag: "🇹🇭", name: "Tailandia GP", circuit: "Chang International", location: "Buriram", dateRange: "28 Feb - 1 de Marzo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-02-28T09:00:00", time: "09:00" }, { name: "Moto3", day: "Domingo", iso: "2026-03-01T06:00:00", time: "06:00" }, { name: "Moto2", day: "Domingo", iso: "2026-03-01T07:15:00", time: "07:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-03-01T09:00:00", time: "09:00" }]},
+            { id: "02", flag: "🇧🇷", name: "Brasil GP", circuit: "Goiânia Ayrton Senna", location: "Goiânia", dateRange: "21 - 22 de Marzo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-03-21T19:00:00", time: "19:00" }, { name: "Moto3", day: "Domingo", iso: "2026-03-22T16:00:00", time: "16:00" }, { name: "Moto2", day: "Domingo", iso: "2026-03-22T17:15:00", time: "17:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-03-22T19:00:00", time: "19:00" }]},
+            { id: "03", flag: "🇺🇸", name: "EE. UU. GP", circuit: "CoTA de Austin", location: "Austin", dateRange: "28 - 29 de Marzo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-03-28T21:00:00", time: "21:00" }, { name: "Moto3", day: "Domingo", iso: "2026-03-29T18:00:00", time: "18:00" }, { name: "Moto2", day: "Domingo", iso: "2026-03-29T19:15:00", time: "19:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-03-29T21:00:00", time: "21:00" }]},
+            { id: "04", flag: "🇶🇦", name: "Catar GP", circuit: "Lusail Inter.", location: "Lusail", dateRange: "11 - 12 de Abril", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-04-11T19:00:00", time: "19:00" }, { name: "Moto3", day: "Domingo", iso: "2026-04-12T16:00:00", time: "16:00" }, { name: "Moto2", day: "Domingo", iso: "2026-04-12T17:15:00", time: "17:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-04-12T19:00:00", time: "19:00" }]},
+            { id: "05", flag: "🇪🇸", name: "España GP", circuit: "Jerez Ángel Nieto", location: "Jerez", dateRange: "25 - 26 de Abril", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-04-25T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-04-26T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-04-26T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-04-26T14:00:00", time: "14:00" }]},
+            { id: "06", flag: "🇫🇷", name: "Francia GP", circuit: "Bugatti Le Mans", location: "Le Mans", dateRange: "9 - 10 de Mayo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-05-09T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-05-10T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-05-10T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-05-10T14:00:00", time: "14:00" }]},
+            { id: "07", flag: "🇪🇸", name: "Cataluña GP", circuit: "Barcelona-Catalunya", location: "Barcelona", dateRange: "16 - 17 de Mayo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-05-16T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-05-17T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-05-17T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-05-17T14:00:00", time: "14:00" }]},
+            { id: "08", flag: "🇮🇹", name: "Italia GP", circuit: "Autodromo Mugello", location: "Mugello", dateRange: "30 - 31 de Mayo", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-05-30T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-05-31T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-05-31T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-05-31T14:00:00", time: "14:00" }]},
+            { id: "09", flag: "🇭🇺", name: "Hungría GP", circuit: "Balaton Park Circuit", location: "Balaton", dateRange: "6 - 7 de Junio", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-06-06T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-06-07T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-06-07T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-06-07T14:00:00", time: "14:00" }]},
+            { id: "10", flag: "🇨🇿", name: "Chequia GP", circuit: "Automotodrom Brno", location: "Brno", dateRange: "20 - 21 de Junio", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-06-20T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-06-21T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-06-21T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-06-21T14:00:00", time: "14:00" }]},
+            { id: "11", flag: "🇳🇱", name: "Países Bajos GP", circuit: "TT Circuit Assen", location: "Assen", dateRange: "27 - 28 de Junio", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-06-27T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-06-28T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-06-28T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-06-28T14:00:00", time: "14:00" }]},
+            { id: "12", flag: "🇩🇪", name: "Alemania GP", circuit: "Sachsenring", location: "Sachsenring", dateRange: "11 - 12 de Julio", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-07-11T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-07-12T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-07-12T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-07-12T14:00:00", time: "14:00" }]},
+            { id: "13", flag: "🇬🇧", name: "Reino Unido GP", circuit: "Silverstone Circuit", location: "Silverstone", dateRange: "8 - 9 de Agosto", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-08-08T17:00:00", time: "17:00" }, { name: "Moto3", day: "Domingo", iso: "2026-08-09T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-08-09T14:00:00", time: "14:00" }, { name: "Moto2", day: "Domingo", iso: "2026-08-09T15:15:00", time: "15:15" }]},
+            { id: "14", flag: "🇪🇸", name: "Aragón GP", circuit: "MotorLand Aragón", location: "Aragón", dateRange: "29 - 30 de Agosto", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-08-29T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-08-30T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-08-30T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-08-30T14:00:00", time: "14:00" }]},
+            { id: "15", flag: "🇸🇲", name: "San Marino GP", circuit: "Misano", location: "Misano", dateRange: "12 - 13 de Septiembre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-09-12T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-09-13T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-09-13T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-09-13T14:00:00", time: "14:00" }]},
+            { id: "16", flag: "🇦🇹", name: "Austria GP", circuit: "Red Bull Ring", location: "Spielberg", dateRange: "19 - 20 de Septiembre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-09-19T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-09-20T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-09-20T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-09-20T14:00:00", time: "14:00" }]},
+            { id: "17", flag: "🇯🇵", name: "Japón GP", circuit: "Motegi", location: "Motegi", dateRange: "3 - 4 de Octubre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-10-03T08:00:00", time: "08:00" }, { name: "Moto3", day: "Domingo", iso: "2026-10-04T04:00:00", time: "04:00" }, { name: "Moto2", day: "Domingo", iso: "2026-10-04T05:15:00", time: "05:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-10-04T07:00:00", time: "07:00" }]},
+            { id: "18", flag: "🇮🇩", name: "Indonesia GP", circuit: "Mandalika", location: "Lombok", dateRange: "10 - 11 de Octubre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-10-10T09:00:00", time: "09:00" }, { name: "Moto3", day: "Domingo", iso: "2026-10-11T06:00:00", time: "06:00" }, { name: "Moto2", day: "Domingo", iso: "2026-10-11T07:15:00", time: "07:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-10-11T09:00:00", time: "09:00" }]},
+            { id: "19", flag: "🇦🇺", name: "Australia GP", circuit: "Philip Island", location: "Philip Island", dateRange: "24 - 25 de Octubre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-10-24T06:00:00", time: "06:00" }, { name: "Moto3", day: "Domingo", iso: "2026-10-25T01:00:00", time: "01:00" }, { name: "Moto2", day: "Domingo", iso: "2026-10-25T02:15:00", time: "02:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-10-25T04:00:00", time: "04:00" }]},
+            { id: "20", flag: "🇲🇾", name: "Malasia GP", circuit: "Sepang", location: "Sepang", dateRange: "31 Oct - 1 de Noviembre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-10-31T08:00:00", time: "08:00" }, { name: "Moto3", day: "Domingo", iso: "2026-11-01T05:00:00", time: "05:00" }, { name: "Moto2", day: "Domingo", iso: "2026-11-01T06:15:00", time: "06:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-11-01T08:00:00", time: "08:00" }]},
+            { id: "21", flag: "🇵🇹", name: "Portugal GP", circuit: "Algarve", location: "Portimão", dateRange: "14 - 15 de Noviembre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-11-14T16:00:00", time: "16:00" }, { name: "Moto3", day: "Domingo", iso: "2026-11-15T12:00:00", time: "12:00" }, { name: "Moto2", day: "Domingo", iso: "2026-11-15T13:15:00", time: "13:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-11-15T15:00:00", time: "15:00" }]},
+            { id: "22", flag: "🇪🇸", name: "Valencia GP", circuit: "Ricardo Tormo", location: "Valencia", dateRange: "21 - 22 de Noviembre", laps: null, sessions: [{ name: "Sprint", day: "Sábado", iso: "2026-11-21T15:00:00", time: "15:00" }, { name: "Moto3", day: "Domingo", iso: "2026-11-22T11:00:00", time: "11:00" }, { name: "Moto2", day: "Domingo", iso: "2026-11-22T12:15:00", time: "12:15" }, { name: "MotoGP", day: "Domingo", iso: "2026-11-22T14:00:00", time: "14:00" }]}
+        ];
+
+        let currentCategory = 'f1';
         let countdownInterval = null;
+
+        function switchCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${cat}`).classList.add('active');
+            initApp();
+        }
 
         function initApp() {
             const now = new Date();
+            const data = currentCategory === 'f1' ? f1Data : motogpData;
             
-            // Lógica para encontrar GP actual (en vivo) o el siguiente futuro
-            currentActiveRace = raceData.find(race => {
+            let activeRace = data.find(race => {
                 const start = new Date(race.sessions[0].iso);
-                const raceSession = race.sessions.find(s => s.name === "Carrera");
-                const end = new Date(new Date(raceSession.iso).getTime() + (2 * 60 * 60 * 1000));
+                const lastSession = race.sessions[race.sessions.length - 1];
+                const end = new Date(new Date(lastSession.iso).getTime() + (2 * 60 * 60 * 1000));
                 return now >= start && now <= end;
             });
 
-            if (!currentActiveRace) {
-                currentActiveRace = raceData.find(race => {
-                    const raceSession = race.sessions.find(s => s.name === "Carrera");
-                    return new Date(raceSession.iso) >= now;
-                }) || raceData[0];
+            if (!activeRace) {
+                activeRace = data.find(race => {
+                    const lastSession = race.sessions[race.sessions.length - 1];
+                    return new Date(lastSession.iso) >= now;
+                }) || data[0];
             }
             
-            updateHero(currentActiveRace);
-            renderGrid(raceData, currentActiveRace);
+            updateHero(activeRace);
+            renderGrid(data, activeRace);
             
-            const nextSession = currentActiveRace.sessions.find(s => new Date(s.iso) > now) || currentActiveRace.sessions[4];
+            const nextSession = activeRace.sessions.find(s => new Date(s.iso) > now) || activeRace.sessions[activeRace.sessions.length-1];
             startCountdown(new Date(nextSession.iso), nextSession.name);
         }
 
         function updateHero(race) {
             const now = new Date();
-            const heroBadge = document.getElementById('hero-badge');
-            const statusDot = document.getElementById('status-dot');
+            const badge = document.getElementById('hero-badge');
+            const dot = document.getElementById('status-dot');
             
             const start = new Date(race.sessions[0].iso);
-            const raceSession = race.sessions.find(s => s.name === "Carrera");
-            const end = new Date(new Date(raceSession.iso).getTime() + (2 * 60 * 60 * 1000));
+            const lastSession = race.sessions[race.sessions.length - 1];
+            const end = new Date(new Date(lastSession.iso).getTime() + (2 * 60 * 60 * 1000));
 
             if (now >= start && now <= end) {
-                heroBadge.textContent = "Disputándose Ahora";
-                heroBadge.className = "live-badge mb-4 inline-block";
-                statusDot.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse";
+                badge.textContent = "Disputándose Ahora";
+                badge.className = "live-badge mb-4 inline-block text-white";
+                dot.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse";
             } else {
-                heroBadge.textContent = "Siguiente Carrera";
-                heroBadge.className = "status-badge mb-4 inline-block";
-                statusDot.className = "w-2 h-2 bg-red-600 rounded-full";
+                badge.textContent = "Siguiente Evento";
+                badge.className = "status-badge mb-4 inline-block text-white";
+                dot.className = "w-2 h-2 bg-red-600 rounded-full";
             }
 
             document.getElementById('hero-name').textContent = `${race.flag} ${race.name}`;
             document.getElementById('hero-subtitle').textContent = race.location;
             document.getElementById('hero-range').textContent = race.dateRange;
             document.getElementById('hero-circuit-box').textContent = race.circuit;
-            document.getElementById('hero-laps').textContent = `${race.laps} Vueltas`;
+            
+            const lapsContainer = document.getElementById('laps-container');
+            if(race.laps) {
+                lapsContainer.style.display = 'block';
+                document.getElementById('hero-laps').textContent = `${race.laps} Vueltas`;
+            } else {
+                lapsContainer.style.display = 'none';
+            }
 
             const sessionsContainer = document.getElementById('hero-sessions');
-            // Ocultar sesiones pasadas
             const remainingSessions = race.sessions.filter(s => new Date(s.iso) > now);
 
             if (remainingSessions.length === 0) {
@@ -355,11 +428,11 @@
                 sessionsContainer.innerHTML = remainingSessions.map(s => `
                     <div class="session-row flex justify-between items-center group">
                         <div>
-                            <p class="text-[10px] text-gray-500 font-black uppercase mb-0.5">${s.day}</p>
-                            <p class="font-bold text-lg tracking-wide group-hover:text-red-500 transition uppercase">${s.name}</p>
+                            <p class="text-[10px] text-zinc-500 font-black uppercase mb-0.5">${s.day}</p>
+                            <p class="font-bold text-2xl tracking-wide group-hover:text-red-500 transition uppercase text-white">${s.name}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-black text-2xl">${s.time}</p>
+                            <p class="font-black text-3xl text-white">${s.time}</p>
                         </div>
                     </div>
                 `).join('');
@@ -376,16 +449,13 @@
                 card.onclick = () => openModal(race);
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-6">
-                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">ROUND ${race.id}</span>
-                        <div class="flex gap-1">
-                            ${race.type ? `<span class="bg-white/10 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest text-red-500">${race.type}</span>` : ''}
-                            ${isNext ? '<span class="status-badge text-[9px] animate-pulse">Sig.</span>' : ''}
-                        </div>
+                        <span class="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">ROUND ${race.id}</span>
+                        ${isNext ? '<span class="status-badge text-[9px] animate-pulse text-white">Sig.</span>' : ''}
                     </div>
-                    <h4 class="text-2xl font-black uppercase italic mb-1 tracking-tighter">${race.flag} ${race.name}</h4>
-                    <p class="text-xs text-gray-500 mb-6 font-semibold">${race.circuit}</p>
+                    <h4 class="text-2xl font-black uppercase italic mb-1 tracking-tighter text-white">${race.flag} ${race.name}</h4>
+                    <p class="text-xs text-zinc-500 mb-6 font-semibold">${race.circuit}</p>
                     <div class="mt-auto flex justify-between items-end">
-                        <div class="bg-white/5 px-4 py-2 rounded-xl text-xs font-black italic">${race.dateRange}</div>
+                        <div class="bg-white/5 px-4 py-2 rounded-xl text-xs font-black italic text-zinc-300">${race.dateRange}</div>
                         <div class="text-red-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></div>
                     </div>
                 `;
@@ -397,20 +467,22 @@
             const modal = document.getElementById('modal');
             const content = document.getElementById('modal-content');
             content.innerHTML = `
-                <div class="mb-4">
-                    <span class="text-[10px] font-black text-red-600 uppercase tracking-widest block">ROUND ${race.id} | ${race.laps} Vueltas</span>
+                <div class="mb-6">
+                    <span class="text-[10px] font-black text-red-600 uppercase tracking-widest block mb-2">ROUND ${race.id} ${race.laps ? '| '+race.laps+' Vueltas' : ''}</span>
+                    <h2 class="text-4xl font-black uppercase italic mb-1 tracking-tighter text-white">${race.flag} ${race.name}</h2>
+                    <p class="text-gray-500 mb-1 font-bold italic text-xl">${race.circuit}</p>
+                    <p class="text-zinc-400 text-sm">${race.dateRange}</p>
                 </div>
-                <h2 class="text-3xl font-black uppercase italic mb-1 tracking-tighter">${race.flag} ${race.name}</h2>
-                <p class="text-gray-500 mb-6 font-bold italic border-b border-white/5 pb-4">${race.circuit} (${race.dateRange})</p>
                 <div class="space-y-4">
+                    <p class="text-[10px] font-black uppercase text-zinc-500 mb-4 tracking-widest border-b border-white/10 pb-2">Sesiones Oficiales</p>
                     ${race.sessions.map(s => `
                         <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition group">
                             <div>
-                                <p class="text-[9px] text-gray-500 font-black uppercase mb-0.5">${s.day}</p>
-                                <p class="font-bold text-lg uppercase group-hover:text-red-500 transition">${s.name}</p>
+                                <p class="text-[9px] text-zinc-500 font-black uppercase mb-0.5">${s.day}</p>
+                                <p class="font-bold text-2xl uppercase group-hover:text-red-500 transition text-white">${s.name}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-2xl font-black">${s.time}</p>
+                                <p class="text-3xl font-black text-white">${s.time}</p>
                             </div>
                         </div>
                     `).join('')}
@@ -428,24 +500,18 @@
         function startCountdown(date, sessionName) {
             if (countdownInterval) clearInterval(countdownInterval);
             const label = document.getElementById('countdown-label');
-            label.textContent = `Siguiente: ${sessionName}`;
+            if(label) label.textContent = `Siguiente: ${sessionName}`;
 
             function update() {
                 const now = new Date().getTime();
                 const distance = date - now;
-                
-                if (distance < 0) {
-                    initApp();
-                    return;
-                }
-
+                if (distance < 0) { initApp(); return; }
                 document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
                 document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
                 document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
                 document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
             }
-            countdownInterval = setInterval(update, 1000);
-            update();
+            countdownInterval = setInterval(update, 1000); update();
         }
         
         window.onload = initApp;
